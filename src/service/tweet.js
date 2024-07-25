@@ -34,4 +34,13 @@ export default class TweetService {
       body: JSON.stringify({ text }),
     });
   }
+
+  getHeaders() {
+    const token = this.tokenStorage.getToken();
+    return { Authorization: `Bearer ${token}` };
+  }
+
+  onSync(callback) {
+    return this.socket.onSync("tweets", callback);
+  }
 }
