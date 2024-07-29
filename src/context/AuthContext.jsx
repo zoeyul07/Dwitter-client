@@ -7,18 +7,18 @@ import {
   useImperativeHandle,
   useMemo,
   useState,
-} from 'react';
-import Header from '../components/Header';
-import Login from '../pages/Login';
+} from "react";
+import Header from "../components/Header";
+import Login from "../pages/Login";
 
 const AuthContext = createContext({});
 
-const contextRef = createRef();
+const tokenRef = createRef();
 
 export function AuthProvider({ authService, authErrorEventBus, children }) {
   const [user, setUser] = useState(undefined);
 
-  useImperativeHandle(contextRef, () => (user ? user.token : undefined));
+  useImperativeHandle(tokenRef, () => (user ? user.token : undefined));
 
   useEffect(() => {
     authErrorEventBus.listen((err) => {
@@ -65,7 +65,7 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
       {user ? (
         children
       ) : (
-        <div className='app'>
+        <div className="app">
           <Header />
           <Login onSignUp={signUp} onLogin={logIn} />
         </div>
@@ -84,5 +84,7 @@ export class AuthErrorEventBus {
 }
 
 export default AuthContext;
-export const fetchToken = () => contextRef.current;
+
+//메모리상 사용자 토큰을 전달해준다.
+export const fetchToken = () => tokenRef.current;
 export const useAuth = () => useContext(AuthContext);

@@ -10,6 +10,8 @@ export default class HttpClient {
         "Content-Type": "application/json",
         ...options.headers,
       },
+      //자동으로 브라우저가 credential에 있는 정보를 추가해, cookie에 있는 정보를 읽어 추가해준다.
+      credentials: "include",
     });
 
     try {
