@@ -14,11 +14,15 @@ import Login from "../pages/Login";
 const AuthContext = createContext({});
 
 const tokenRef = createRef();
+const csrfRef = createRef();
 
 export function AuthProvider({ authService, authErrorEventBus, children }) {
   const [user, setUser] = useState(undefined);
+  const [csrfToken, setCsrfToken] = useState(undefined);
 
   useImperativeHandle(tokenRef, () => (user ? user.token : undefined));
+
+  useImperativeHandle(csrfRef, () => csrfToken);
 
   useEffect(() => {
     authErrorEventBus.listen((err) => {
@@ -26,6 +30,10 @@ export function AuthProvider({ authService, authErrorEventBus, children }) {
       setUser(undefined);
     });
   }, [authErrorEventBus]);
+
+  useEffect(() => {
+    authService.csrfToken().then(setCsrfToken).catch(console.error);
+  }, [authService]);
 
   useEffect(() => {
     authService.me().then(setUser).catch(console.error);
@@ -87,4 +95,5 @@ export default AuthContext;
 
 //메모리상 사용자 토큰을 전달해준다.
 export const fetchToken = () => tokenRef.current;
+export const fetchCsrfToken = () => csrfRef.current;
 export const useAuth = () => useContext(AuthContext);
